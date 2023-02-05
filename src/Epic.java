@@ -1,63 +1,42 @@
 import java.util.ArrayList;
-import java.util.HashMap;
-public class Epic extends Task{
-    Manager manager = new Manager();
+import java.util.Objects;
 
+public class Epic extends Task {
+    private ArrayList<Integer> subtasks;
 
-    public Epic(Object taskName, Object taskInformation, String taskStatus) {
-        super(taskName, taskInformation, taskStatus);
-    }
-    ArrayList<HashMap<Integer, Subtask>> subtaskList = new ArrayList<>();
-
-    public void createNewSubtask(Object taskName, Object taskInformation, String taskStatus) {
-        int id = manager.getId();
-        Subtask subtask = new Subtask(taskName, taskInformation, taskStatus);
-        HashMap<Integer, Subtask> subtaskHashMap = new HashMap<>();
-        subtaskHashMap.put(id, subtask);
-        subtaskList.add(subtaskHashMap);
-        manager.setId();
+    public Epic(String name, Object description, String status, int id, ArrayList<Integer> subtasks) {
+        super(name, description, status, id);
+        this.subtasks = subtasks;
     }
 
-    public boolean completeAllSubtask(){
-        boolean isAllEpicCompleted = true;
-        for (HashMap<Integer, Subtask> subtaskHashMap : subtaskList) {
-            for (Subtask subtask : subtaskHashMap.values()){
-                if (Status.DONE.equals(subtask.taskStatus)) {
-                    isAllEpicCompleted = false;
-                    break;
-                }
-            }
-        }
-        return isAllEpicCompleted;
+    public ArrayList<Integer> getSubtasks() {
+        return subtasks;
     }
 
-    public boolean completeSubtask(){
-        boolean isEpicCompleted = true;
-        for (HashMap<Integer, Subtask> subtaskHashMap : subtaskList) {
-            for (Subtask subtask : subtaskHashMap.values()) {
-                if (!Status.NEW.equals(subtask.taskStatus)) {
-                    isEpicCompleted = false;
-                    break;
-                }
-            }
-        }
-        return isEpicCompleted;
+    public void setSubtasks(ArrayList<Integer> subtasks) {
+        this.subtasks = subtasks;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subtasks, epic.subtasks);
     }
 
     @Override
-    public String getTaskStatus(String status) {
-        for (HashMap<Integer, Subtask> subtaskHashMap : subtaskList) {
-            if (subtaskHashMap.isEmpty()) {
-                this.taskStatus = Status.NEW;
-            } else if (completeSubtask()) {
-                this.taskStatus = Status.NEW;
-            } else if (completeAllSubtask()) {
-                this.taskStatus = Status.DONE;
-            } else {
-                this.taskStatus = Status.IN_PROGRESS;
-            }
-        }
-        return this.taskStatus;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasks);
+    }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "subtasks=" + subtasks +
+                "} " + super.toString();
     }
 }
 
