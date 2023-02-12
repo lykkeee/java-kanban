@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-    int generatorId();
 
     int addNewTask(Task task);
 
@@ -16,11 +15,11 @@ public interface TaskManager {
 
     int addNewSubtask(Subtask subtask);
 
-    ArrayList<Task> getTasks();
+    List<Task> getTasks();
 
-    ArrayList<Epic> getEpics();
+    List<Epic> getEpics();
 
-    ArrayList<Subtask> getSubtasks();
+    List<Subtask> getSubtasks();
 
     void deleteTasks();
 

@@ -5,19 +5,19 @@ import ru.yandex.potapov.schedule.task.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class InMemoryTaskManager implements TaskManager{
     private int id = 0;
 
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Epic> epics = new HashMap<>();
-    private HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    HistoryManager historyManager = new Managers().getDefaultHistory();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
+    private final HistoryManager historyManager = new Managers().getDefaultHistory();
 
 
-    @Override
-    public int generatorId() {
+    private int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
         return this.id++;
     }
 
@@ -50,20 +50,20 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
-    public ArrayList<Task> getTasks() {
-        ArrayList<Task> taskArrayList = new ArrayList<>(tasks.values());
+    public List<Task> getTasks() {
+        List<Task> taskArrayList = new ArrayList<>(tasks.values());
         return taskArrayList;
     }
 
     @Override
-    public ArrayList<Epic> getEpics() {
-        ArrayList<Epic> epicArrayList = new ArrayList<>(epics.values());
+    public List<Epic> getEpics() {
+        List<Epic> epicArrayList = new ArrayList<>(epics.values());
         return epicArrayList;
     }
 
     @Override
-    public ArrayList<Subtask> getSubtasks() {
-        ArrayList<Subtask> subtaskArrayList = new ArrayList<>(subtasks.values());
+    public List<Subtask> getSubtasks() {
+        List<Subtask> subtaskArrayList = new ArrayList<>(subtasks.values());
         return subtaskArrayList;
     }
 
