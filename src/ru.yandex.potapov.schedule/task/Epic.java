@@ -22,7 +22,14 @@ public class Epic extends Task {
         subtasks.clear();
     }
     public void deleteSubtaskId(int id) {
-        subtasks.remove(id);
+        int counter = 0;
+        for (int subtask : subtasks) {
+            if (subtask == id) {
+                subtasks.remove(counter);
+                break;
+            }
+            counter++;
+        }
     }
 
 

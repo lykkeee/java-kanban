@@ -16,11 +16,6 @@ public class InMemoryTaskManager implements TaskManager{
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager historyManager = new Managers().getDefaultHistory();
 
-
-    private int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
-        return this.id++;
-    }
-
     @Override
     public int addNewTask(Task task) {
         int id = generatorId();
@@ -149,22 +144,26 @@ public class InMemoryTaskManager implements TaskManager{
 
     @Override
     public void deleteTask(int id) {
+        historyManager.remove(id);
         tasks.remove(id);
     }
 
     @Override
     public void deleteEpic(int id) {
         Epic epic = epics.remove(id);
+        historyManager.remove(id);
         for (Integer subtaskId : epic.getSubtasks()) {
             subtasks.remove(subtaskId);
+            historyManager.remove(subtaskId);
         }
     }
 
     @Override
     public void deleteSubtask(int id) {
-        subtasks.remove(id);
         Epic epic = epics.get(subtasks.get(id).getEpicId());
+        subtasks.remove(id);
         epic.deleteSubtaskId(id);
+        historyManager.remove(id);
         updateEpicStatus(epic.getId());
     }
 
@@ -196,5 +195,9 @@ public class InMemoryTaskManager implements TaskManager{
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    private int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
+        return this.id++;
     }
 }
