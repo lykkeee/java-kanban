@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager    {
-
+public class InMemoryHistoryManager implements HistoryManager {     // Не совсем разобрался с подсказками
+                                                                    // и не понял куда и зачем вставлять метод removeNode
     class Node {
         public Task task;
         public Node prev;
@@ -49,7 +49,7 @@ public class InMemoryHistoryManager implements HistoryManager    {
             return history;
         } else {
             while (node != null) {
-                if(history.contains(node.task)){
+                if (history.contains(node.task)) {
                     history.remove(node.task);
                 }
                 history.add(node.task);
@@ -70,7 +70,8 @@ public class InMemoryHistoryManager implements HistoryManager    {
                 node.prev.next = node.next;
             } else if (node.next != null) {
                 node.next.prev = node.prev;
-            };
+            }
+            ;
             if (first == node) {
                 first = node.next;
             } else if (last == node) {
