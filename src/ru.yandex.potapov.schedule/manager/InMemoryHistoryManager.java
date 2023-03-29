@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager {     // Не совсем разобрался с подсказками
-                                                                    // и не понял куда и зачем вставлять метод removeNode
+public class InMemoryHistoryManager implements HistoryManager {
+
     class Node {
         public Task task;
         public Node prev;
@@ -24,60 +24,67 @@ public class InMemoryHistoryManager implements HistoryManager {     // Не со
     private Node first;
     private Node last;
 
+    private void linkLast(Task task) {
+        final Node node = new Node(task, last, null);
+        node.prev = last;
+        if (first == null) {
+            first = node;
+        } else {
+            last.next = node;
+        }
+        last = node;
+    }
 
     @Override
     public void add(Task task) {
-        final Node oldLast = last;
-        final Node newNode = new Node(task, last, null);
-        newNode.prev = last;
-        if (oldLast != null) {
-            oldLast.next = newNode;
-
-        } else {
-            first = newNode;
+        if (task == null) {
+            return;
         }
-        last = newNode;
-        remove(task.getId());
-        history.put(task.getId(), newNode);
+        final int id = task.getId();
+        removeNode(id);
+        linkLast(task);
+        history.put(id, last);
     }
 
     @Override
     public List<Task> getHistory() {
-        final List<Task> history = new ArrayList<>();
+        return getTasks();
+    }
+
+    private ArrayList<Task> getTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
         Node node = first;
-        if (first == null) {
-            return history;
-        } else {
-            while (node != null) {
-                if (history.contains(node.task)) {
-                    history.remove(node.task);
-                }
-                history.add(node.task);
-                node = node.next;
-            }
+        while (node != null) {
+            tasks.add(node.task);
+            node = node.next;
         }
-        return history;
+        return tasks;
     }
 
     @Override
     public void remove(int id) {
-        if (history.containsKey(id)) {
-            Node node = history.get(id);
-            if (node.prev != null && node.next != null) {
-                node.prev.next = node.next;
-                node.next.prev = node.prev;
-            } else if (node.prev != null) {
-                node.prev.next = node.next;
-            } else if (node.next != null) {
-                node.next.prev = node.prev;
-            }
-            ;
-            if (first == node) {
-                first = node.next;
-            } else if (last == node) {
+        removeNode(id);
+    }
+
+    private void removeNode(int id) {
+        final Node node = history.remove(id);
+        if (node == null) {
+            return;
+        }
+        if (node.prev != null) {
+            node.prev.next = node.next;
+            if (node.next == null) {
                 last = node.prev;
+            } else {
+                node.next.prev = node.prev;
             }
-            history.remove(id);
+        } else {
+            first = node.next;
+            if (first == null) {
+                last = null;
+            } else {
+                first.prev = null;
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new Managers().getDefault();
+        TaskManager taskManager = Managers.getDefault();
         taskManager.addNewTask(new Task("1 задача", "Описание 1", Status.NEW, 0));
         taskManager.addNewTask(new Task("2 задача", "Описание 2", Status.NEW, 0));
         taskManager.addNewEpic(new Epic("1 эпик", "Описание 1 эпика", Status.NEW, 0, new ArrayList<>()));
