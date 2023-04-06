@@ -11,10 +11,10 @@ import java.util.Map;
 public class InMemoryTaskManager implements TaskManager{
     private int id = 0;
 
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected static final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public int addNewTask(Task task) {
@@ -197,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager{
         return historyManager.getHistory();
     }
 
-    private int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
+    protected int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
         return this.id++;
     }
 }
