@@ -4,7 +4,6 @@ import ru.yandex.potapov.schedule.task.Epic;
 import ru.yandex.potapov.schedule.task.Subtask;
 import ru.yandex.potapov.schedule.task.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {

@@ -1,5 +1,7 @@
 package ru.yandex.potapov.schedule.task;
 
+import ru.yandex.potapov.schedule.manager.TaskType;
+
 import java.util.Objects;
 
 public class Task {
@@ -15,6 +17,14 @@ public class Task {
         this.id = id;
     }
 
+    public Integer getEpicId() {
+        return null;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     public String getName() {
         return name;
     }
@@ -27,7 +37,7 @@ public class Task {
         return description;
     }
 
-    public void setDescription(String  description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

@@ -1,5 +1,7 @@
 package ru.yandex.potapov.schedule.task;
 
+import ru.yandex.potapov.schedule.manager.TaskType;
+
 import java.util.Objects;
 
 public class Subtask extends Task {
@@ -10,7 +12,13 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    public int getEpicId() {
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
+    }
+
+    @Override
+    public Integer getEpicId() {
         return epicId;
     }
 

@@ -1,5 +1,7 @@
 package ru.yandex.potapov.schedule.task;
 
+import ru.yandex.potapov.schedule.manager.TaskType;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -9,6 +11,11 @@ public class Epic extends Task {
     public Epic(String name, String description, Status status, int id, ArrayList<Integer> subtasks) {
         super(name, description, status, id);
         this.subtasks = subtasks;
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     public ArrayList<Integer> getSubtasks() {
