@@ -2,13 +2,11 @@ package ru.yandex.potapov.schedule.manager;
 
 import ru.yandex.potapov.schedule.task.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
-public class InMemoryTaskManager implements TaskManager{
+public class InMemoryTaskManager implements TaskManager {
     protected int id = 0;
 
     protected final Map<Integer, Task> tasks = new HashMap<>();
@@ -18,6 +16,9 @@ public class InMemoryTaskManager implements TaskManager{
 
     @Override
     public int addNewTask(Task task) {
+        if (checkTimeIntersection(task)){
+            throw new TimeIntersectionException("Some task or subtask already has the same time");
+        }
         int id = generatorId();
         tasks.put(id, task);
         task.setId(id);
@@ -30,16 +31,21 @@ public class InMemoryTaskManager implements TaskManager{
         epics.put(id, epic);
         epic.setId(id);
         updateEpicStatus(epic.getId());
+        calculateEpicTime(epic.getId());
         return id;
     }
 
     @Override
     public int addNewSubtask(Subtask subtask) {
+        if (checkTimeIntersection(subtask)){
+            throw new TimeIntersectionException("Some task or subtask already has the same time");
+        }
         int id = generatorId();
         subtasks.put(id, subtask);
         int epicId = subtask.getEpicId();
         epics.get(epicId).getSubtasks().add(id);
         subtask.setId(id);
+        calculateEpicTime(epicId);
         updateEpicStatus(epicId);
         return id;
     }
@@ -78,6 +84,7 @@ public class InMemoryTaskManager implements TaskManager{
         for (Epic epic : epics.values()) {
             epic.cleanSubtasksId();
             updateEpicStatus(epic.getId());
+            calculateEpicTime(epic.getId());
         }
         subtasks.clear();
     }
@@ -116,6 +123,9 @@ public class InMemoryTaskManager implements TaskManager{
         if (savedTask == null) {
             return;
         }
+        if (checkTimeIntersection(task)){
+            throw new TimeIntersectionException("Some task or subtask already has the same time");
+        }
         tasks.put(id, task);
     }
 
@@ -129,6 +139,7 @@ public class InMemoryTaskManager implements TaskManager{
         epic.setSubtasks(savedEpic.getSubtasks());
         epics.put(id, epic);
         updateEpicStatus(epic.getId());
+        calculateEpicTime(epic.getId());
     }
 
     @Override
@@ -139,7 +150,11 @@ public class InMemoryTaskManager implements TaskManager{
             return;
         }
         subtasks.put(id, subtask);
+        if (checkTimeIntersection(subtask)){
+            throw new TimeIntersectionException("Some task or subtask already has the same time");
+        }
         updateEpicStatus(subtask.getEpicId());
+        calculateEpicTime(subtask.getEpicId());
     }
 
     @Override
@@ -165,6 +180,7 @@ public class InMemoryTaskManager implements TaskManager{
         epic.deleteSubtaskId(id);
         historyManager.remove(id);
         updateEpicStatus(epic.getId());
+        calculateEpicTime(epic.getId());
     }
 
     @Override
@@ -197,7 +213,69 @@ public class InMemoryTaskManager implements TaskManager{
         return historyManager.getHistory();
     }
 
-    protected int generatorId() {    //чтобы сделать этот метод приватным я удалил его из интерфейса, так и надо?
+    @Override
+    public void calculateEpicTime(int epicId) {
+        Epic epic = epics.get(epicId);
+        ArrayList<Integer> subs = epic.getSubtasks();
+        int duration = 0;
+        LocalDateTime startTime = null;
+        LocalDateTime endTime = null;
+        for (int id : subs) {
+            final Subtask subtask = subtasks.get(id);
+            duration += subtask.getDuration();
+            // Я здесь хотел сделать что-то вроде if (startTime == null | subtask.getStartTime().isBefore(startTime)),
+            // но так не пускает. Есть какой-то способ, чтобы сделать это компактнее, чем то, что ниже?
+            if (startTime == null) {
+                startTime = subtask.getStartTime();
+            } else if (endTime == null) {
+                endTime = subtask.getEndTime();
+            } else if (subtask.getStartTime().isBefore(startTime)) {
+                startTime = subtask.getStartTime();
+            } else if (subtask.getEndTime().isAfter(endTime)) {
+                endTime = subtask.getEndTime();
+            }
+        }
+        epic.setDuration(duration);
+        epic.setStartTime(startTime);
+        epic.setEndTime(endTime);
+    }
+
+    Comparator<Task> taskComparator = (o1, o2) -> {
+        if (o1.getStartTime().isAfter(o2.getStartTime())) {
+            return 1;
+        } else {
+            return -1;
+        }
+    };
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        //Почему мы не можем сделать TreeSet в классе и записывать в него каждый раз, как создается таска, тогда
+        //при вызове этого метода не надо будет каждый раз перебирать таски. Что я упускаю?
+        Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
+        prioritizedTasks.addAll(tasks.values());
+        prioritizedTasks.addAll(subtasks.values());
+        return prioritizedTasks;
+    }
+
+    @Override
+    public boolean checkTimeIntersection(Task task) {
+        List<Task> taskList = new ArrayList<>(getPrioritizedTasks());
+        boolean isIntersect = false;
+        for (Task tsk : taskList) {
+            if (task.getStartTime() == null | tsk.getStartTime() == null) {
+                continue;
+            }
+            if (task.getStartTime().isAfter(tsk.getStartTime()) && task.getStartTime().isBefore(tsk.getEndTime()) ||
+            task.getEndTime().isAfter(tsk.getStartTime()) && task.getEndTime().isBefore(tsk.getEndTime())) {
+                isIntersect = true;
+                break;
+            }
+        }
+        return isIntersect;
+    }
+
+    protected int generatorId() {
         return this.id++;
     }
 }

@@ -4,16 +4,9 @@ import ru.yandex.potapov.schedule.task.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.*;
-/*
-Несколько вопросов:
-1. В классе InMemoryHistoryManager в 29 строке необходимо добавить node.prev = last, иначе prev будет null
-    Но ведь в 28 строке мы передаем значение в конструктор. Почему так?
-2. В задании сказано, что в FileBackedTasksManager для записи в файл необходимо переопределить toString() или создать свой метод
-    Я пошел по 2 пути, потому что совсем не понял как в этой ситуации можно переопределить стандартный. Можно какой-нибудь пример, пожалуйста?
-3. Почему мы создаём своё исключение и пробрасываем его, а не просто в catch пишем, например System.out.println("Error...")?
-4. Почему надо создавать метод main в этом классе? А не проверять в классе Main
- */
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private static File saveFile;
 
@@ -23,13 +16,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void main(String[] args) {
         TaskManager taskManager = Managers.getDefault();
-        taskManager.addNewTask(new Task("1 задача", "Описание 1", Status.NEW, 0));
-        taskManager.addNewTask(new Task("2 задача", "Описание 2", Status.NEW, 0));
-        taskManager.addNewEpic(new Epic("1 эпик", "Описание 1 эпика", Status.NEW, 0, new ArrayList<>()));
-        taskManager.addNewSubtask(new Subtask("1 подзадача", "Описание 1 подзадачи", Status.NEW, 0, 2));
-        taskManager.addNewSubtask(new Subtask("2 подзадача", "Описание 2 подзадачи", Status.NEW, 0, 2));
-        taskManager.addNewSubtask(new Subtask("3 подзадача", "Описание 3 подзадачи", Status.NEW, 0, 2));
-        taskManager.addNewEpic(new Epic("2 эпик", "Описание 2 эпика", Status.NEW, 0, new ArrayList<>()));
+        taskManager.addNewTask(new Task("1 задача", "Описание 1", Status.NEW, 0, 15, LocalDateTime.now()));
+        taskManager.addNewTask(new Task("2 задача", "Описание 2", Status.NEW, 0, 10, LocalDateTime.now()));
+        taskManager.addNewEpic(new Epic("1 эпик", "Описание 1 эпика", Status.NEW, 0, new ArrayList<>(), 0,
+                LocalDateTime.now(), LocalDateTime.now()));
+        taskManager.addNewSubtask(new Subtask("1 подзадача", "Описание 1 подзадачи", Status.NEW, 0, 2, 6, LocalDateTime.now()));
+        taskManager.addNewSubtask(new Subtask("2 подзадача", "Описание 2 подзадачи", Status.NEW, 0, 2, 7, LocalDateTime.now()));
+        taskManager.addNewSubtask(new Subtask("3 подзадача", "Описание 3 подзадачи", Status.NEW, 0, 2, 8, LocalDateTime.now()));
+        taskManager.addNewEpic(new Epic("2 эпик", "Описание 2 эпика", Status.NEW, 0, new ArrayList<>(), 0,
+                LocalDateTime.now(), LocalDateTime.now()));
         taskManager.getTask(1);
         taskManager.getEpic(2);
         taskManager.getSubtask(3);
@@ -242,6 +237,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void updateEpicStatus(int epicId) {
         super.updateEpicStatus(epicId);
+        save();
+    }
+
+    @Override
+    public void calculateEpicTime(int epicId) {
+        super.calculateEpicTime(epicId);
         save();
     }
 }

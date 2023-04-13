@@ -1,14 +1,13 @@
 package ru.yandex.potapov.schedule.task;
 
-import ru.yandex.potapov.schedule.manager.TaskType;
-
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private int epicId;
 
-    public Subtask(String name, String description, Status status, int id, int epicId) {
-        super(name, description, status, id);
+    public Subtask(String name, String description, Status status, int id, int epicId, int duration, LocalDateTime startTime) {
+        super(name, description, status, id, duration, startTime);
         this.epicId = epicId;
     }
 

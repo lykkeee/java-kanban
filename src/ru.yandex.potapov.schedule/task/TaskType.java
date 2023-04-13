@@ -1,4 +1,4 @@
-package ru.yandex.potapov.schedule.manager;
+package ru.yandex.potapov.schedule.task;
 
 public enum TaskType {
     TASK,

@@ -5,6 +5,7 @@ import ru.yandex.potapov.schedule.task.Subtask;
 import ru.yandex.potapov.schedule.task.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -47,6 +48,12 @@ public interface TaskManager {
     void deleteSubtask(int id);
 
     void updateEpicStatus(int epicId);
+
+    void calculateEpicTime(int epicId);
+
+    Set<Task> getPrioritizedTasks();
+
+    boolean checkTimeIntersection(Task task);
 
     List<Task> getHistory();
 }

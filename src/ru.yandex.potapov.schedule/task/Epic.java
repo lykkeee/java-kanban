@@ -1,16 +1,27 @@
 package ru.yandex.potapov.schedule.task;
 
-import ru.yandex.potapov.schedule.manager.TaskType;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtasks;
+    LocalDateTime endTime;
 
-    public Epic(String name, String description, Status status, int id, ArrayList<Integer> subtasks) {
-        super(name, description, status, id);
+    public Epic(String name, String description, Status status, int id, ArrayList<Integer> subtasks,
+                int duration, LocalDateTime startTime, LocalDateTime endTime) {
+        super(name, description, status, id, duration, startTime);
         this.subtasks = subtasks;
+        this.endTime = endTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override

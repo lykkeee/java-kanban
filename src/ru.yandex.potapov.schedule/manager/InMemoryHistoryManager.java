@@ -15,8 +15,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         public Node(Task task, Node prev, Node next) {
             this.task = task;
-            this.prev = null;
-            this.next = null;
+            this.prev = prev;
+            this.next = next;
         }
     }
 
@@ -26,7 +26,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void linkLast(Task task) {
         final Node node = new Node(task, last, null);
-        node.prev = last;
         if (first == null) {
             first = node;
         } else {
