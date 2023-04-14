@@ -49,11 +49,7 @@ public interface TaskManager {
 
     void updateEpicStatus(int epicId);
 
-    void calculateEpicTime(int epicId);
-
-    Set<Task> getPrioritizedTasks();
-
-    boolean checkTimeIntersection(Task task);
+    List<Task> getPrioritizedTasks();
 
     List<Task> getHistory();
 }

@@ -1,6 +1,6 @@
 package ru.yandex.potapov.schedule.manager;
 
-public class TimeIntersectionException extends RuntimeException{
+public class TimeIntersectionException extends RuntimeException {
     public TimeIntersectionException() {
     }
 

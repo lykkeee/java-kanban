@@ -8,10 +8,10 @@ public class Task {
     private String description;
     private Status status;
     private int id;
-    private int duration;
+    private long duration;
     private LocalDateTime startTime;
 
-    public Task(String name, String description, Status status, int id, int duration, LocalDateTime startTime) {
+    public Task(String name, String description, Status status, int id, long duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -24,11 +24,11 @@ public class Task {
         return startTime.plusMinutes(duration);
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

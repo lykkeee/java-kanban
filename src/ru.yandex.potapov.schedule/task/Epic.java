@@ -6,10 +6,10 @@ import java.util.Objects;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtasks;
-    LocalDateTime endTime;
+    private LocalDateTime endTime;
 
     public Epic(String name, String description, Status status, int id, ArrayList<Integer> subtasks,
-                int duration, LocalDateTime startTime, LocalDateTime endTime) {
+                long duration, LocalDateTime startTime, LocalDateTime endTime) {
         super(name, description, status, id, duration, startTime);
         this.subtasks = subtasks;
         this.endTime = endTime;
