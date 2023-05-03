@@ -13,8 +13,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager(File file) {
         saveFile = file;
     }
+    public FileBackedTasksManager(){}
 
-    public void main(String[] args) {
+    public void main(String[] args) throws IOException, InterruptedException {
         TaskManager taskManager = Managers.getDefault();
         taskManager.addNewTask(new Task("1 задача", "Описание 1", Status.NEW, 0, 15, LocalDateTime.now()));
         taskManager.addNewTask(new Task("2 задача", "Описание 2", Status.NEW, 0, 10, LocalDateTime.now()));
@@ -68,7 +69,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 epic.getSubtasks().add(subtask.getId());
             }
             for (Integer taskId : history) {
-                taskManager.historyManager.add(taskManager.findTask(taskId));
+                historyManager.add(taskManager.findTask(taskId));
             }
             taskManager.id = generatorId;
         } catch (IOException e) {

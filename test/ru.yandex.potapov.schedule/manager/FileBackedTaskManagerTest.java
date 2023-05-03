@@ -1,20 +1,21 @@
-package ru.yandex.potapov.schedule.test;
+package ru.yandex.potapov.schedule.manager;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.potapov.schedule.manager.FileBackedTasksManager;
-import ru.yandex.potapov.schedule.manager.Managers;
-import ru.yandex.potapov.schedule.manager.TaskManager;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksManager> {
     private File file = new File("resources/saveFileTest.csv");
 
+    protected FileBackedTaskManagerTest() throws IOException, InterruptedException {
+    }
+
     @Override
     protected TaskManager createNewManager() {
-        return Managers.getFileBackedTasksManager(new File("resources/saveFileTest.csv"));
+        return new FileBackedTasksManager();
     }
 
     @Test

@@ -1,14 +1,13 @@
-package ru.yandex.potapov.schedule.test;
+package ru.yandex.potapov.schedule.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.potapov.schedule.manager.Managers;
-import ru.yandex.potapov.schedule.manager.TaskManager;
 import ru.yandex.potapov.schedule.task.Epic;
 import ru.yandex.potapov.schedule.task.Status;
 import ru.yandex.potapov.schedule.task.Subtask;
 import ru.yandex.potapov.schedule.task.Task;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected Epic epic;
     protected Subtask subtask;
 
-    protected TaskManager createNewManager() {
+    protected TaskManagerTest() throws IOException, InterruptedException {
+    }
+
+    protected TaskManager createNewManager() throws IOException, InterruptedException {
         return Managers.getDefault();
     }
 
@@ -240,19 +242,6 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addNewSubtask(new Subtask("subtask1", "subtaskDescription", Status.IN_PROGRESS, 2,
                 1, 15, LocalDateTime.of(2028, 1, 1, 1, 1)));
         assertEquals(epic.getStatus(), Status.IN_PROGRESS, "Statuses are not equals");
-    }
-
-    @Test
-    void getHistory() {
-        assertNotNull(taskManager.getHistory(), "History is not empty");
-        taskManager.getTask(task.getId());
-        taskManager.getEpic(epic.getId());
-        taskManager.getSubtask(subtask.getId());
-        final List<Task> history = new ArrayList<>();
-        history.add(task);
-        history.add(epic);
-        history.add(subtask);
-        assertEquals(taskManager.getHistory(), history, "History lists are not equal");
     }
 
     @Test

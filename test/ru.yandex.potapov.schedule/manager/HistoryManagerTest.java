@@ -1,9 +1,7 @@
-package ru.yandex.potapov.schedule.test;
+package ru.yandex.potapov.schedule.manager;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.yandex.potapov.schedule.manager.HistoryManager;
-import ru.yandex.potapov.schedule.manager.Managers;
 import ru.yandex.potapov.schedule.task.Epic;
 import ru.yandex.potapov.schedule.task.Status;
 import ru.yandex.potapov.schedule.task.Subtask;
