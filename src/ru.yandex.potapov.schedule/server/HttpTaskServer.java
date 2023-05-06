@@ -1,7 +1,6 @@
 package ru.yandex.potapov.schedule.server;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import ru.yandex.potapov.schedule.manager.Managers;
@@ -22,16 +21,16 @@ public class HttpTaskServer {
     private final TaskManager taskManager;
     private final HttpServer server;
 
-    public HttpTaskServer() throws IOException, InterruptedException {
+    public HttpTaskServer() throws IOException {
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/tasks", this::handleTasks);
         taskManager = Managers.getDefault();
         gson = new Gson();
     }
 
-     /*Не могу понять почему не вызываются таски
-     Причем если создавать их здесь, то будет все нормально, но даже с подсказками я не смог отследить где ошибка
-     В остальном вроде все работает */
+     /*Причину нашел - taskManager здесь никак не реагирует, если создать таску в другом классе
+       Так и должно быть?
+       POST работает. И если вызвать GET после POST, то все нормально */
 
     private void handleTasks(HttpExchange exchange) {
         try {

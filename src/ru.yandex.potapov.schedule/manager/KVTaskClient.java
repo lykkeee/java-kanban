@@ -11,33 +11,61 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class KVTaskClient {
     private final String url;
-    HttpClient client;
     private final String apiToken;
 
-    public KVTaskClient(String url) throws IOException, InterruptedException {
+    public KVTaskClient(String url) {
         this.url = url;
-        client = HttpClient.newHttpClient();
-        apiToken = register();
+        apiToken = register(url);
     }
 
-    public String load(String key) throws IOException, InterruptedException {
-        URI uri = URI.create(url + "/load/" + key + "?API_TOKEN=" + apiToken);
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(UTF_8));
-        return String.valueOf(response.body());
+    private String register(String url) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url + "/register"))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new ManagerSaveException("Can't do save request, status code: " + response.statusCode());
+            }
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Can't do save request", e);
+        }
     }
 
-    public void put(String key, String json) throws IOException, InterruptedException {
-        URI uri = URI.create(url + "/save/" + key + "?API_TOKEN=" + apiToken);
-        HttpRequest request = HttpRequest.newBuilder().POST(HttpRequest.BodyPublishers.ofString(json)).uri(uri).build();
-        client.send(request, HttpResponse.BodyHandlers.ofString(UTF_8));
+    public String load(String key) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url + "/load/" + key + "?API_TOKEN=" + apiToken))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new ManagerSaveException("Can't do save request, status code: " + response.statusCode());
+            }
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Can't do save request", e);
+        }
     }
 
-    private String register() throws IOException, InterruptedException {
-        URI uri = URI.create(url + "/register");
-        HttpRequest request = HttpRequest.newBuilder().GET().uri(uri).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(UTF_8));
-        return String.valueOf(response.body());
+    public void put(String key, String value) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url + "/save/" + key + "?API_TOKEN=" + apiToken))
+                    .POST(HttpRequest.BodyPublishers.ofString(value))
+                    .build();
+            HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+            if (response.statusCode() != 200) {
+                throw new ManagerSaveException("Can't do save request, status code: " + response.statusCode());
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Can't do save request", e);
+        }
     }
 
 }

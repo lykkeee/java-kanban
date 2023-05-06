@@ -29,7 +29,7 @@ public class KVServer {
     }
 
     private void load(HttpExchange h) throws IOException {
-        try (OutputStream os = h.getResponseBody()) {
+        try {
             System.out.println("\n/load");
             if (!hasAuth(h)) {
                 System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
@@ -43,10 +43,14 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                String value = data.get(key);
-                System.out.println("Значение " + value + " для ключа " + key + " получено!");
+                if (!data.containsKey(key)) {
+                    System.out.println("Не могу достать данные для ключа '" + key + "', данные отсутствуют");
+                    h.sendResponseHeaders(404, 0);
+                    return;
+                }
+                sendText(h, data.get(key));
+                System.out.println("Значение для ключа " + key + " успешно отправлено в ответ на запрос!");
                 h.sendResponseHeaders(200, 0);
-                os.write(value.getBytes());
             } else {
                 System.out.println("/load ждёт GET-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);

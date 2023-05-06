@@ -1,9 +1,7 @@
 package ru.yandex.potapov.schedule.manager;
 
-import java.io.IOException;
-
 public class Managers {
-    public static TaskManager getDefault() throws IOException, InterruptedException {
+    public static TaskManager getDefault() {
         return new HttpTaskManager("http://localhost:8078");
     }
 

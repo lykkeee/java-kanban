@@ -11,12 +11,12 @@ public class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
     }
 
     @Override
-    protected TaskManager createNewManager() throws IOException, InterruptedException {
+    protected TaskManager createNewManager() {
         return Managers.getDefault();
     }
 
     @Test
-    void loadFromServer() throws IOException, InterruptedException {
+    void loadFromServer() {
         TaskManager manager = new HttpTaskManager("http://localhost:8078").loadFromServer();
         assertEquals(taskManager.getHistory(), manager.getHistory(), "History lists are not equals");
         assertEquals(taskManager.getTasks(), manager.getTasks(), "Task lists are not equals");
