@@ -65,8 +65,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTasks() {
-        for(Task task : getPrioritizedTasks()){
-            for(Task t : tasks.values()){
+        for (Task task : getPrioritizedTasks()) {
+            for (Task t : tasks.values()) {
                 if (task.equals(t)) {
                     prioritizedTasks.remove(task);
                 }
@@ -83,8 +83,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteSubtasks() {
-        for(Task task : getPrioritizedTasks()){
-            for(Subtask sub : subtasks.values()){
+        for (Task task : getPrioritizedTasks()) {
+            for (Subtask sub : subtasks.values()) {
                 if (task.equals(sub)) {
                     prioritizedTasks.remove(task);
                 }

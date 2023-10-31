@@ -28,10 +28,6 @@ public class HttpTaskServer {
         gson = new Gson();
     }
 
-     /*Причину нашел - taskManager здесь никак не реагирует, если создать таску в другом классе
-       Так и должно быть?
-       POST работает. И если вызвать GET после POST, то все нормально */
-
     private void handleTasks(HttpExchange exchange) {
         try {
             String path = exchange.getRequestURI().getPath();

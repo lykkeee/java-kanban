@@ -5,7 +5,6 @@ import ru.yandex.potapov.schedule.task.Subtask;
 import ru.yandex.potapov.schedule.task.Task;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
 

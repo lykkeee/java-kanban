@@ -13,7 +13,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager(File file) {
         saveFile = file;
     }
-    public FileBackedTasksManager(){}
+
+    public FileBackedTasksManager() {
+    }
 
     public void main(String[] args) throws IOException, InterruptedException {
         TaskManager taskManager = Managers.getDefault();
